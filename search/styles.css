@@ -72,3 +72,6 @@ input[type=text] {
 #footer_right > div {
     margin-right: 5%;
 }
+.advanced_input {
+    width: 100px;
+}
