@@ -1,0 +1,16 @@
+{% extends "encyclopedia/layout.html" %} 
+
+{% block title %} 
+    {{ title }} 
+{% endblock %} 
+{% block random %}
+    <a href="{% url 'wiki:entry' name=random_page %}">Random Page</a>
+{% endblock %}
+{% block body %} 
+    {{ content | safe}} 
+    
+    <form method="POST">
+        {% csrf_token %}
+        <input class="btn btn-primary" type="submit" value="Edit">
+    </form>
+{% endblock %}

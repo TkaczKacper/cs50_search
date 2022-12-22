@@ -3,13 +3,15 @@
 {% block title %}
     Encyclopedia
 {% endblock %}
-
+{% block random %}
+    <a href="{% url 'wiki:entry' name=random_page %}">Random Page</a>
+{% endblock %}
 {% block body %}
     <h1>All Pages</h1>
 
     <ul>
-        {% for entry in entries %}
-            <li>{{ entry }}</li>
+        {% for entry_ in entries %}
+            <li><a href="{% url 'wiki:entry' name=entry_ %}">{{ entry_ }}</a></li>
         {% endfor %}
     </ul>
 

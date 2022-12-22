@@ -1,0 +1,31 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Page creator
+{% endblock %}
+{% block random %}
+    <a href="{% url 'wiki:entry' name=random_page %}">Random Page</a>
+{% endblock %}
+{% block body %}
+    
+    
+    {% load bootstrap %}
+    <form method="POST" style="max-width: 600px;">
+        {% if error_message %}
+            <div class="alert alert-info" role="alert" style="text-align: center;">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        {% if success_message %}
+            <div class="alert alert-success" role="alert" style="text-align: center;">
+                {{ success_message }}
+            </div>
+        {% endif %}
+
+        {% csrf_token %}
+        {{ form.title | bootstrap }}
+        {{ form.content | bootstrap }}
+        <input class="btn btn-primary" type="submit" value="Add">
+    </form>
+
+{% endblock %}
