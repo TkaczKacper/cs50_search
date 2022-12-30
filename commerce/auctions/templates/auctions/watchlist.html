@@ -1,12 +1,13 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-        {% for auction in Auctions %}
+    {% if Watchlist %}
+        <h2>Auctions on your watchlist</h2>
+        {% for auction in Watchlist %}
         <div class="w-80" style="display: flex;">
             <div class="col-6">
                 <div class="row justify-content-md-center">
-                    <a href="{% url 'listings' number=auction.pk %}"><h1>{{ auction.title }}</h1></a>
+                    <a href="{% url 'listings' number=auction.id %}"><h1>{{ auction.title }}</h1></a>
                 </div>
                 <div class="row">
                     {{ auction.description }}
@@ -32,4 +33,7 @@
             {% endif %}
         </div>
         {% endfor %}
+    {% else %}
+        <h1>You dont have any listings in your watchlist, check <a href="{% url 'index' %}">Active Listings</a></h1>
+    {% endif %}
 {% endblock %}

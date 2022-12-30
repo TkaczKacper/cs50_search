@@ -1,0 +1,38 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if auctions %}
+        {% for auction in auctions %}
+            <div class="w-80" style="display: flex;">
+                <div class="col-6">
+                    <div class="row justify-content-md-center">
+                        <a href="{% url 'listings' number=auction.id %}"><h1>{{ auction.title }}</h1></a>
+                    </div>
+                    <div class="row">
+                        {{ auction.description }}
+                    </div>
+                    <div class="row">
+                        {% if auction.current_bid == 0 %}
+                            No bids yet, starting price is: ${{ auction.starting_bid }}
+                        {% else %}
+                            Current bid: ${{ auction.current_bid }}
+                        {% endif %}
+                    </div>
+                    <div class="row" style="position: absolute; bottom: 40px;">
+                        Auction ends on: {{ auction.end_date }}
+                    </div>
+                    <div class="row" style="position:absolute; bottom: 0px;">
+                        <p>Listed by: <b>{{ auction.owner }}</b></p>
+                    </div>
+                </div>
+                {% if auction.auction_image %}
+                <div class="col-6">
+                    <img src="{{ auction.auction_image }}" style="max-height: 400px;">
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <h1>No listings in that category right now, go <a href="{% url 'create_listing' %}">create</a> some by yourself.</h1>
+    {% endif %}
+{% endblock %}

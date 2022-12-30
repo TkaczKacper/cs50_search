@@ -1,0 +1,110 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if not active %}
+    <div class="alert alert-info" role="alert">
+        <p>Auction finished on {{ auction.end_date }}.</p>
+        {% if winner %}
+            <p>Highest bid was ${{ winner.bid }}, posted by <b>{{ winner }}</b></p>
+        {% else %}
+            <p>Noone took part in this auction.</p>
+        {% endif %}
+    </div>
+{% endif %}
+<div class="w-80 justify-content-md-center" style="display: flex; max-height: 500px;">
+    <div class="col-6" style="height: 500px;">
+        <div class="row justify-content-md-center">
+            <h1>{{ auction.title }}</h1>
+        </div>
+        <div class="row justify-content-md-center">
+            {{ auction.description }}     
+        </div>
+        <div class="row mt-4">
+            Auction created on: {{ auction.start_date }}
+        </div>
+        {% if active %}
+            <div class="row">
+                {% if auction.current_bid == 0 %}
+                    No bids yet. Starting price is: ${{ auction.starting_bid }}
+                {% else %}
+                    <p>Auction winner is <b>{{ winner }}</b>. Current highest bid: ${{ auction.current_bid }}</p>
+                {% endif %}
+            </div>
+            <div class="row" style="margin-top: 50px;">
+                <form action={% url 'make_bid' number=auction.pk %} method="post">
+                    {% csrf_token %}
+                    {{ bid_form }}
+                    <input class="btn btn-primary" type="submit" value="Make bid">
+                </form>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row" style="position:absolute; bottom: 40px;">
+                Auction ends on: {{ auction.end_date }}
+            </div>
+        {% endif %}
+        <div class="row" style="position:absolute; bottom: 0px;">
+            <p>Auction owner: <b>{{ auction.owner }}</b></p>
+        </div>
+    </div>
+    <div class="col-6">
+        <img src="{{ auction.auction_image }}" style="max-height: 500px;">
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        {% if user == auction.owner %}
+            {% if active %}
+                <form action={% url 'finish_auction' number=auction.pk %} method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Finish auction.">
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="col-3 justify-content-md-center">
+        {% if not on_watchlist %}
+            <form action={% url 'add_to_watchlist' number=auction.pk %} method="post">
+                {% csrf_token %}
+                <input type="submit" value="Add to watchlist">
+            </form>
+        {% else %}
+            <form action={% url 'remove_from_watchlist' number=auction.pk %} method="post">
+                {% csrf_token %}
+                <input type="submit" value="Remove from watchlist">
+            </form>
+        {% endif %}
+    </div>
+</div>
+<div class="border-top" style="display: flex; flex-direction: column; ">
+    <div class="row ml-3">
+        <h2>Discusion: </h2>
+    </div>
+    <div class="row ml-3" style="display: flex; flex-direction: column;">
+        <table class="table table-striped">
+            <tbody>
+            {% for comment in comments %}
+                <tr>
+                    <td>
+                        <p><b>{{ comment.comment_author }}</b> on {{ comment.comment_datetime }} wrote: </p>
+                        {{ comment.comment }} 
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form action="{% url 'add_comment' number=auction.pk %}" method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input class="btn btn-primary" type="submit" value="Comment">
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
