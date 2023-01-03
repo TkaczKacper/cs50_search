@@ -1,3 +1,12 @@
 textarea {
     min-height: 400px;
 }
+tr:hover {
+    font-size: 20px;
+    background-color: whitesmoke;
+    cursor: pointer;
+}
+.email-properties-nav {
+    border-bottom: 1px solid;
+    border-color: black;
+}
