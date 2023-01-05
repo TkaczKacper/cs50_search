@@ -9,14 +9,14 @@ class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_owner", default=None)
     timestamp = models.DateTimeField(default=None)
     content = models.CharField(max_length=2500, default=None)
-    likes = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_likers", default=None)
+    likes = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_likers", default=None, null=True)
 
 class Comments(models.Model):
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_id", default=None)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_owner", default=None)
     timestap = models.DateTimeField(default=None)
-    likes = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_likers", default=None)
-    content = models.CharField(max_length=1000, default=None)
+    likes = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_likers", null=True, default=None)
+    content = models.CharField(max_length=1000, default=None, null=True)
 
 class Relations(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="relation_follower", default=None)

@@ -1,5 +1,32 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    <div class="d-flex align-items-center flex-column">
+        <div class="p-2 d-flex flex-column" id="new_post_container">
+            <div class="p-2">
+                <h1>New post</h1>
+            </div>
+            <div class="p-2">
+                <form action={% url 'add_post' %} method="POST">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <textarea class="form-control" name="post_content" rows="4" placeholder="What's on your mind, {{ user.username }}?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add post</button>
+                </form>
+            </div>
+        </div>
+        <div class="d-flex flex-column" id="posts_container">
+            <div class="p-2">
+                <h1>All posts:</h1>
+            </div>
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="p-2">
+                        {{ post.content }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
