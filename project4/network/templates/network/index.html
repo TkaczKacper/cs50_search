@@ -26,11 +26,6 @@
                         <div id="post_author">
                             <strong>{{ post.owner }}</strong>
                         </div>
-                        {% if user == post.owner %}
-                            <form method="POST">
-                                <button type="submit" class="btn btn-link">Edit</button>
-                            </form>
-                        {% endif %}
                         <div id="post_content">
                             {{ post.content }}
                         </div>
@@ -40,13 +35,23 @@
                         <div class="d-flex" id="post_likes">
                             <div id="heart"></div>{{ post.likes.count }}
                         </div>
-                        <form method="POST">
-                            <button type="submit" class="btn btn-link">Comment</button>
+                        <form method="POST" class="form-inline">
+                            <input type="text" class="form-control" name="comment_content" placeholder="Add a comment..." style="width: 30%; margin: 10px;">
+                            <button type="submit" class="btn btn-secondary">Comment</button>
                         </form>
                         {% if user == post.owner %}
-                            <form method="POST">
-                                <button type="submit" class="btn btn-link">Delete</button>
-                            </form>
+                            <div class="d-flex">
+                                <div class="p-2">
+                                    <form method="POST">
+                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                    </form>
+                                </div>
+                                <div class="p-2">
+                                    <form method="POST">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
                         {% endif %}
                     </div>
                 {% endfor %}
