@@ -22,8 +22,32 @@
             </div>
             {% if posts %}
                 {% for post in posts %}
-                    <div class="p-2">
-                        {{ post.content }}
+                    <div class="post">
+                        <div id="post_author">
+                            <strong>{{ post.owner }}</strong>
+                        </div>
+                        {% if user == post.owner %}
+                            <form method="POST">
+                                <button type="submit" class="btn btn-link">Edit</button>
+                            </form>
+                        {% endif %}
+                        <div id="post_content">
+                            {{ post.content }}
+                        </div>
+                        <div id="post_timestamp">
+                            {{ post.timestamp }}
+                        </div>
+                        <div class="d-flex" id="post_likes">
+                            <div id="heart"></div>{{ post.likes.count }}
+                        </div>
+                        <form method="POST">
+                            <button type="submit" class="btn btn-link">Comment</button>
+                        </form>
+                        {% if user == post.owner %}
+                            <form method="POST">
+                                <button type="submit" class="btn btn-link">Delete</button>
+                            </form>
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% endif %}

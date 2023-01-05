@@ -1,15 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import User, Post, Comments, Relations
+from .models import User, Post, Comments
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-timestamp')
     return render(request, "network/index.html", {
         "posts": posts
     })
