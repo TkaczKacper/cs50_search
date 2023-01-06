@@ -6,14 +6,20 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 
 from .models import User, Post, Comments
 
 
 def index(request):
     posts = Post.objects.all().order_by('-timestamp')
+    paginator = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
-        "posts": posts
+        "posts": page_obj,
+        "number": paginator.num_pages
     })
 
 
@@ -38,20 +44,30 @@ def profil(request, username):
             "message": message
         })
     followers = user.followers.all()
-    posts = Post.objects.filter(owner=user)
+    posts = Post.objects.filter(owner=user).order_by('-timestamp')
+    paginator = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/profil.html", {
         "user_data": user,
         "followers": followers,
-        "posts": posts
+        "posts": page_obj,
+        "number": paginator.num_pages
     })
 
 
 def following(request):
     try:
         followers = User.objects.get(username=request.user)
-        posts = Post.objects.filter(owner__in=followers.followers.all())
+        posts = Post.objects.filter(owner__in=followers.followers.all()).order_by('-timestamp')
+        paginator = Paginator(posts, 10)
+
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
         return render(request, "network/index.html", {
-            "posts": posts
+            "posts": page_obj,
+            "number": paginator.num_pages
         })
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('login'))

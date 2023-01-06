@@ -41,6 +41,55 @@
                   </div>
                   <div class="d-flex flex-column" id="posts_container">
                   <div class="p-2">
+                        {% if number > 1 %}
+                              <nav class="navbar sticky-top justify-content-center" aria-label="Page navigation example" style="margin-top: 10px;">
+                                    <ul class="pagination">
+                                    {% if posts.has_previous %}
+                                          <li>
+                                                <a class="page-link" href="?page=1">&Pr;</a>
+                                          </li>
+                                                <li class="pagination justyify-content-center">
+                                                <a class="page-link" href="?page={{ posts.previous_page_number }}" tabindex="-1" aria-disabled="true">&pr;</a>
+                                          </li>
+                                          <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.previous_page_number }}">{{ posts.number|add:"-1" }}</a>
+                                          </li>
+                                    {% else %}
+                                          <li>
+                                                <a class="page-link" aria-disabled="true">&Pr;</a>
+                                          </li>
+                                          <li class="pagination justyify-content-center">
+                                                <a class="page-link" tabindex="-1" aria-disabled="true">&pr;</a>
+                                          </li>
+                                    {% endif %}
+                                    <li class="page-item">
+                                          <a class="page-link" aria-disabled="true">{{ posts.number }}</a>
+                                    </li>
+                                    {% if posts.has_next %}
+                                          <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.next_page_number }}" aria-disabled="false">{{ posts.number|add:"1" }}</a>
+                                          </li>
+                                          <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.next_page_number }}">&sc;</a>
+                                          </li>
+                                          <li class="page-item">
+                                                <a class="page-link" aria-label="Next" href="?page={{ posts.paginator.num_pages }}">
+                                                <span aria-hidden="true">&Sc;</span>
+                                                </a>
+                                          </li>
+                                    {% else %}
+                                          <li class="page-item">
+                                                <a class="page-link" aria-disabled="true">&sc;</a>
+                                          </li>
+                                          <li class="page-item">
+                                                <a class="page-link" aria-label="Next" aria-disabled="true">
+                                                <span aria-hidden="true">&Sc;</span>
+                                                </a>
+                                          </li>
+                                    {% endif %}
+                                    </ul>
+                              </nav>
+                        {% endif %}
                         <h1>User posts:</h1>
                         {% if posts %}
                               {% for post in posts %}
