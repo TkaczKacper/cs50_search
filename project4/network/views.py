@@ -1,12 +1,15 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
+
 
 from .models import User, Post, Comments
 
@@ -19,7 +22,8 @@ def index(request):
     page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
         "posts": page_obj,
-        "number": paginator.num_pages
+        "number": paginator.num_pages,
+        "site": "index"
     })
 
 
@@ -53,7 +57,8 @@ def profil(request, username):
         "user_data": user,
         "followers": followers,
         "posts": page_obj,
-        "number": paginator.num_pages
+        "number": paginator.num_pages,
+        "site": "profil"
     })
 
 
@@ -67,7 +72,8 @@ def following(request):
         page_obj = paginator.get_page(page_number)
         return render(request, "network/index.html", {
             "posts": page_obj,
-            "number": paginator.num_pages
+            "number": paginator.num_pages,
+            "site": "following"
         })
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('login'))
@@ -83,6 +89,37 @@ def follow(request, username):
             user_profil.followers.add(User.objects.get(username=request.user))
             user_profil.save()
     return HttpResponseRedirect(reverse('profil',  kwargs={'username':username}))
+
+
+def delete(request, post_id):
+    try:
+        site = request.POST["site_name"]
+        post = Post.objects.get(id=post_id)
+        if request.method == "POST":
+            if post.owner == request.user:
+                post.delete()
+        if site == "profil":
+            return HttpResponseRedirect(reverse(site, kwargs={'username':request.user.username}))
+        else:
+            return HttpResponseRedirect(reverse(site))
+    except:
+        return HttpResponseRedirect(reverse('index'))
+
+@csrf_exempt
+def edit(request, post_id):
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Email not found."}, status=404)
+
+    if request.method == 'UPDATE':
+        data = json.loads(request.body)
+        if post.owner == request.user:
+            if data.get("content") is not None:
+                post.content = data["content"]
+                post.save()
+        return HttpResponse(status=204)
+    return HttpResponseRedirect(reverse('index'))
 
 
 def login_view(request):

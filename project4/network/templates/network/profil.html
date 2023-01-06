@@ -94,17 +94,26 @@
                         {% if posts %}
                               {% for post in posts %}
                                     <div class="post">
-                                    <div id="post_author">
-                                          <a href="{% url 'profil' username=post.owner %}" style="color: black;"><strong>{{ post.owner }}</strong></a>
-                                    </div>
-                                    <div id="post_content">
-                                          {{ post.content }}
-                                    </div>
-                                    <div id="post_timestamp">
-                                          {{ post.timestamp }}
-                                    </div>
-                                    <div class="d-flex" id="post_likes">
-                                          <div id="heart"></div>{{ post.likes.count }}
+                                          <div id="post_author">
+                                                <a href="{% url 'profil' username=post.owner %}" style="color: black;"><strong>{{ post.owner }}</strong></a>
+                                          </div>
+                                          <div id="post_content">
+                                                <div class="post_content_edit" id="post_content_edit_post{{ post.id }}">
+                                                    <form class="post_edit_form" id="{{ post.id }}">
+                                                        <textarea class="form-control" id="post{{ post.id }}_content" rows="4" required>{{ post.content }}</textarea>
+                                                        <button type="submit" class="btn btn-success save_post_button" id="{{ post.id }}">save</button>
+                                                    </form>
+                                                    <button class="btn btn-danger cancel_edit_button" id="post{{ post.id }}">cancel</button>
+                                                </div>
+                                                <div class="post_content_view" id="post_content_view_post{{ post.id }}">
+                                                    {{ post.content }}
+                                                </div>
+                                          </div>
+                                          <div id="post_timestamp">
+                                                {{ post.timestamp }}
+                                          </div>
+                                          <div class="d-flex" id="post_likes">
+                                                <div id="heart"></div>{{ post.likes.count }}
                                     </div>
                                     {% if user.is_authenticated %}
                                           <form method="POST" class="form-inline">
@@ -119,12 +128,12 @@
                                     {% if user == post.owner %}
                                           <div class="d-flex">
                                                 <div class="p-2">
-                                                <form method="POST">
-                                                      <button type="submit" class="btn btn-primary">Edit</button>
-                                                </form>
+                                                      <button class="btn btn-primary edit_post_button" id="post{{ post.id }}">Edit</button>
                                                 </div>
                                                 <div class="p-2">
-                                                <form method="POST">
+                                                <form method="POST" action="{% url 'delete' post_id=post.pk %}">
+                                                      {% csrf_token %}
+                                                      <input hidden type="text" name="site_name" value="{{site}}">
                                                       <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
                                                 </div>

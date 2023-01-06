@@ -1,6 +1,9 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+    {% if message %}
+        <h1>{{ message }}</h1>
+    {% endif %}
     <div class="d-flex align-items-center flex-column">
         {% if user.is_authenticated %}
             <div id="new-post-view">
@@ -80,7 +83,16 @@
                             <a href="{% url 'profil' username=post.owner %}" style="color: black;"><strong>{{ post.owner }}</strong></a>
                         </div>
                         <div id="post_content">
-                            {{ post.content }}
+                            <div class="post_content_edit" id="post_content_edit_post{{ post.id }}">
+                                <form class="post_edit_form" id="{{ post.id }}">
+                                    <textarea class="form-control" id="post{{ post.id }}_content" rows="4" required>{{ post.content }}</textarea>
+                                    <button type="submit" class="btn btn-success save_post_button" id="{{ post.id }}">save</button>
+                                </form>
+                                <button class="btn btn-danger cancel_edit_button" id="post{{ post.id }}">cancel</button>
+                            </div>
+                            <div class="post_content_view" id="post_content_view_post{{ post.id }}">
+                                {{ post.content }}
+                            </div>
                         </div>
                         <div id="post_timestamp">
                             {{ post.timestamp }}
@@ -101,12 +113,12 @@
                         {% if user == post.owner %}
                             <div class="d-flex">
                                 <div class="p-2">
-                                    <form method="POST">
-                                        <button type="submit" class="btn btn-primary">Edit</button>
-                                    </form>
+                                    <button class="btn btn-primary edit_post_button" id="post{{ post.id }}">Edit</button>
                                 </div>
                                 <div class="p-2">
-                                    <form method="POST">
+                                    <form method="POST" action="{% url 'delete' post_id=post.id %}">
+                                        {% csrf_token %}
+                                        <input hidden name="site_name" value="{{ site }}">
                                         <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
                                 </div>
