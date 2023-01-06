@@ -28,6 +28,7 @@ def add_post(request):
     else:
         return HttpResponseRedirect(reverse('index'))
 
+
 def profil(request, username):
     try:
         user = User.objects.get(username=username)
@@ -43,6 +44,30 @@ def profil(request, username):
         "followers": followers,
         "posts": posts
     })
+
+
+def following(request):
+    try:
+        followers = User.objects.get(username=request.user)
+        posts = Post.objects.filter(owner__in=followers.followers.all())
+        return render(request, "network/index.html", {
+            "posts": posts
+        })
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect(reverse('login'))
+
+
+def follow(request, username):
+    if request.method == "POST":
+        user_profil = User.objects.get(username=username)
+        if request.user in user_profil.followers.all():
+            user_profil.followers.remove(User.objects.get(username=request.user))
+            user_profil.save()
+        else:
+            user_profil.followers.add(User.objects.get(username=request.user))
+            user_profil.save()
+    return HttpResponseRedirect(reverse('profil',  kwargs={'username':username}))
+
 
 def login_view(request):
     if request.method == "POST":

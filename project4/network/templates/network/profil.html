@@ -26,12 +26,12 @@
                         <div class="p-2 ml-auto">
                               {% if not user_data == user %}
                                     {% if user in followers %}
-                                          <form method="POST">
+                                          <form method="POST" action="{% url 'follow' username=user_data.username %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-danger">Unfollow</button>
                                           </form>
                                     {% else %}
-                                          <form method="POST">
+                                          <form method="POST" action="{% url 'follow' username=user_data.username %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-success">Follow</button>
                                           </form>
