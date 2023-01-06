@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import User, Post, Comments
 
@@ -14,6 +15,7 @@ def index(request):
     return render(request, "network/index.html", {
         "posts": posts
     })
+
 
 def add_post(request):
     if request.method == "POST":
@@ -25,6 +27,23 @@ def add_post(request):
         return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponseRedirect(reverse('index'))
+
+def profil(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        message = "stop playing with links"
+        return render(request, "network/profil.html", {
+            "message": message
+        })
+    followers = user.followers.all()
+    posts = Post.objects.filter(owner=user)
+    return render(request, "network/profil.html", {
+        "user_data": user,
+        "followers": followers,
+        "posts": posts
+    })
+
 def login_view(request):
     if request.method == "POST":
 
