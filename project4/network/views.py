@@ -17,7 +17,7 @@ from .models import User, Post, Comments
 def index(request):
     posts = Post.objects.all().order_by('-timestamp')
     paginator = Paginator(posts, 10)
-
+    
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
@@ -104,6 +104,7 @@ def delete(request, post_id):
             return HttpResponseRedirect(reverse(site))
     except:
         return HttpResponseRedirect(reverse('index'))
+
 
 @csrf_exempt
 def edit(request, post_id):

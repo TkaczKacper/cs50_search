@@ -97,8 +97,13 @@
                         <div id="post_timestamp">
                             {{ post.timestamp }}
                         </div>
-                        <div class="d-flex" id="post_likes">
-                            <div id="heart"></div>{{ post.likes.count }}
+                        <div class="d-flex" id="post{{ post.id }}_likes">
+                            {% if user in post.likes.all %}
+                                <div class="liked" id="{{ post.id }}"></div>
+                            {% else %}
+                                <div class="not_liked" id="{{ post.id }}"></div>
+                            {% endif %}
+                            {{ post.likes.count }}
                         </div>
                         {% if user.is_authenticated %}
                             <form method="POST" class="form-inline">

@@ -26,12 +26,12 @@ div.post > * {
       font-size: 23px;
 }
 
-#heart {
+.not_liked {
       position: relative;
       width: 20px;
       height: 18px;
 }
-#heart:before, #heart:after {
+.not_liked:before, .not_liked:after {
       position: absolute;
       content: "";
       left: 10px;
@@ -44,8 +44,31 @@ div.post > * {
       transform-origin: 0 100%;
       border: 1px solid;
 }
-#heart:after { 
+.not_liked:after { 
       left: 0; 
       transform: rotate(45deg); 
       transform-origin :100% 100%; 
-  }
+}
+.liked {
+      position: relative;
+      width: 20px;
+      height: 18px;
+}
+.liked:before, .liked:after {
+      position: absolute;
+      content: "";
+      left: 10px;
+      top: 0;
+      width: 10px;
+      height: 16px; 
+      background: red; 
+      border-radius: 10px 10px 0 0; 
+      transform: rotate(-45deg); 
+      transform-origin: 0 100%;
+      border: 1px solid;
+}
+.liked:after { 
+      left: 0; 
+      transform: rotate(45deg); 
+      transform-origin :100% 100%; 
+}
