@@ -106,8 +106,10 @@
                                 {% endif %}
                                 {{ post.likes.count }}
                             </div>
-                            <form method="POST" class="form-inline">
-                                <input type="text" class="form-control" name="comment_content" placeholder="Add a comment..." style="width: 30%; margin: 10px;">
+                            <form method="POST" class="form-inline" action="{% url 'comment' post_id=post.id%}">
+                                {% csrf_token %}
+                                <input hidden name="site_name" value="{{ site }}">
+                                <input required type="text" class="form-control" name="comment_content" placeholder="Add a comment..." style="width: 30%; margin: 10px;">
                                 <button type="submit" class="btn btn-secondary">Comment</button>
                             </form>
                         {% else %}
@@ -118,6 +120,41 @@
                                 <a href="{% url 'login' %}">Log in</a> to react&comment.
                             </div>
                         {% endif %}
+                        <div class="comments" style="margin: 0;">
+                            <span style="text-align: center;">
+                               <h3>Post comments</h3>
+                            </span>
+                            {% for comment in comments %}
+                                {% if comment.post_id == post %} 
+                                    <div class="comment">
+                                        <div id="comment_owner" style="font-size: 20px;">
+                                            <a href="{% url 'profil' username=comment.owner %}" style="color: black;"><strong>{{ comment.owner }}</strong></a>
+                                        </div>
+                                        <div id="comment_content">
+                                            {{ comment.content }}
+                                        </div>
+                                        <div id="comment_timestamp">
+                                            {{ comment.timestamp }}
+                                        </div>
+                                        {% if user.is_authenticated %}
+                                            <div class="d-flex" id="comment{{ comment.pk }}_likes">
+                                                {% if user in comment.likes.all %}
+                                                    <div class="comment_liked" id="{{ comment.pk }}"></div>
+                                                {% else %}
+                                                    <div class="comment_not_liked" id="{{ comment.pk }}"></div>
+                                                {% endif %}
+                                                {{ comment.likes.count }}
+                                            </div>
+                                        {% else %}
+                                            <div class="d-flex" id="post{{ post.id }}_likes">
+                                                    ♥ {{ comment.likes.count }}
+                                            </div>
+                                            <a href="{% url 'login' %}">Log in</a> to react.
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                         {% if user == post.owner %}
                             <div class="d-flex">
                                 <div class="p-2">

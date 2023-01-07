@@ -10,7 +10,7 @@
 .post {
       border: 1px solid;
       border-color: lightgray;
-      margin: 5px;
+      margin: 10px;
 }
 div.post > * {
       margin-left: 15px;
@@ -26,12 +26,12 @@ div.post > * {
       font-size: 23px;
 }
 
-.not_liked {
+.not_liked, .liked, .comment_liked, .comment_not_liked {
       position: relative;
       width: 20px;
       height: 18px;
 }
-.not_liked:before, .not_liked:after {
+.not_liked:before, .not_liked:after, .comment_not_liked:before, .comment_not_liked:after {
       position: absolute;
       content: "";
       left: 10px;
@@ -44,17 +44,7 @@ div.post > * {
       transform-origin: 0 100%;
       border: 1px solid;
 }
-.not_liked:after { 
-      left: 0; 
-      transform: rotate(45deg); 
-      transform-origin :100% 100%; 
-}
-.liked {
-      position: relative;
-      width: 20px;
-      height: 18px;
-}
-.liked:before, .liked:after {
+.liked:before, .liked:after, .comment_liked:before, .comment_liked:after {
       position: absolute;
       content: "";
       left: 10px;
@@ -67,8 +57,28 @@ div.post > * {
       transform-origin: 0 100%;
       border: 1px solid;
 }
-.liked:after { 
+.not_liked:after, .liked:after, .comment_not_liked:after, .comment_liked:after { 
       left: 0; 
       transform: rotate(45deg); 
       transform-origin :100% 100%; 
+}
+
+.comments {
+      width: 100%;
+      border-top: 1px solid;
+      border-color: lightgray;
+}
+.comment {
+      width: 100%;
+      border-top: 1px solid;
+      border-color: lightgray;
+}
+div.comment > * {
+      margin-left: 15px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+}
+#comment_timestamp {
+      font-size: 11px;
+      color: gray;
 }

@@ -17,13 +17,15 @@ from .models import User, Post, Comments
 def index(request):
     posts = Post.objects.all().order_by('-timestamp')
     paginator = Paginator(posts, 10)
-    
+    comments = Comments.objects.all().order_by('-timestamp')
+
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
         "posts": page_obj,
         "number": paginator.num_pages,
-        "site": "index"
+        "site": "index",
+        "comments": comments
     })
 
 
@@ -50,6 +52,7 @@ def profil(request, username):
     followers = user.followers.all()
     posts = Post.objects.filter(owner=user).order_by('-timestamp')
     paginator = Paginator(posts, 10)
+    comments = Comments.objects.all().order_by('-timestamp')
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -58,7 +61,8 @@ def profil(request, username):
         "followers": followers,
         "posts": page_obj,
         "number": paginator.num_pages,
-        "site": "profil"
+        "site": "profil",
+        "comments": comments
     })
 
 
@@ -67,13 +71,15 @@ def following(request):
         followers = User.objects.get(username=request.user)
         posts = Post.objects.filter(owner__in=followers.followers.all()).order_by('-timestamp')
         paginator = Paginator(posts, 10)
+        comments = Comments.objects.all().order_by('-timestamp')
 
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(request, "network/index.html", {
             "posts": page_obj,
             "number": paginator.num_pages,
-            "site": "following"
+            "site": "following",
+            "comments": comments
         })
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('login'))
@@ -142,6 +148,49 @@ def like(request, post_id):
             return JsonResponse({"success": "Liked"}, status=204)
         else: 
             return HttpResponse(status=400)
+
+
+@csrf_exempt
+def comment_like(request, comment_pk):
+    try:
+        comment = Comments.objects.get(pk=comment_pk)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Comment not found"}, status=404)
+
+    if request.user not in User.objects.all():
+        return JsonResponse({"error": "Log in to react."}, status=404)
+    else:
+        if request.method == "LIKE":
+            comment.likes.add(request.user)
+            comment.save()
+            return JsonResponse({"success": "Liked"}, status=204)
+        if request.method == "UNLIKE":
+            comment.likes.remove(request.user)
+            comment.save()
+            return JsonResponse({"success": "Liked"}, status=204)
+        else: 
+            return HttpResponse(status=400)
+
+
+def comment(request, post_id):
+    try:
+        site = request.POST["site_name"]
+        comment_content = request.POST["comment_content"]
+        post = Post.objects.get(id=post_id)
+        comment = Comments()
+        if request.method == "POST":
+            if comment_content:
+                comment.post_id = post
+                comment.owner = request.user
+                comment.content = comment_content
+                comment.timestamp = timezone.now()
+                comment.save()
+        if site == "profil":
+            return HttpResponseRedirect(reverse(site, kwargs={'username':request.user.username}))
+        else:
+            return HttpResponseRedirect(reverse(site))
+    except:
+        return HttpResponseRedirect(reverse('index'))
 
 
 def login_view(request):

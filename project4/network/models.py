@@ -15,6 +15,6 @@ class Post(models.Model):
 class Comments(models.Model):
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_id", default=None)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_owner", default=None)
-    timestap = models.DateTimeField(default=None)
+    timestamp = models.DateTimeField(default=None)
     likes = models.ManyToManyField(User, blank=True, related_name="comment_likers")
     content = models.CharField(max_length=1000, default=None, null=True)

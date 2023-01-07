@@ -13,8 +13,10 @@ urlpatterns = [
     path("follow/<str:username>", views.follow, name="follow"),
     path("following", views.following, name="following"),
     path("delete/<int:post_id>", views.delete, name="delete"),
+    path("comment/<int:post_id>", views.comment, name="comment"),
 
     #path used by fetch
     path("edit/<int:post_id>", views.edit, name="edit"),
-    path("like/<int:post_id>", views.like, name="like")
+    path("like/<int:post_id>", views.like, name="like"),
+    path("comment_like/<int:comment_pk>", views.comment_like, name="comment_like")
 ]

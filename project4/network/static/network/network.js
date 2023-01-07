@@ -52,11 +52,22 @@ document.addEventListener('DOMContentLoaded', function () {
                   like(element);
             });
       });
+      document.querySelectorAll('.comment_liked').forEach(element => {
+            element.addEventListener('click', () => {
+                  commentUnlike(element);
+            });
+      });
+      document.querySelectorAll('.comment_not_liked').forEach(element => {
+            element.addEventListener('click', () => {
+                  commentLike(element);
+            });
+      });
       //by default edit view hidden
       document.querySelectorAll('.post_content_edit').forEach(element => {
             element.style.display = 'none';
       });
 });
+
 
 function like(element) {
       fetch(`/like/${element.id}`, {
@@ -79,6 +90,29 @@ function like(element) {
       });
 };
 
+
+function commentLike(element) {
+      fetch(`/comment_like/${element.id}`, {
+            method: 'LIKE',
+      });
+
+      const mainDiv = document.querySelector(`#comment${element.id}_likes`);  
+      const divToRemove = mainDiv.children[0];
+      divToRemove.remove();
+
+      const divToInsert = document.createElement('div');
+      divToInsert.id = element.id;
+      divToInsert.className = 'comment_liked';
+      const likes_count = Number(mainDiv.innerHTML) + 1;
+      mainDiv.innerHTML = '';
+      mainDiv.appendChild(divToInsert);
+      mainDiv.innerHTML += likes_count;
+      mainDiv.firstChild.addEventListener('click', () => {
+            commentUnlike(divToInsert);
+      });
+};
+
+
 function unlike(element) {
       fetch(`/like/${element.id}`, {
             method: 'UNLIKE',
@@ -95,5 +129,25 @@ function unlike(element) {
       mainDiv.innerHTML += likes_count;
       mainDiv.firstChild.addEventListener('click', () => {
             like(divToInsert);
+      });
+};
+
+
+function commentUnlike(element) {
+      fetch(`/comment_like/${element.id}`, {
+            method: 'UNLIKE',
+      });
+      const mainDiv = document.querySelector(`#comment${element.id}_likes`);
+      const divToRemove = mainDiv.children[0];
+      divToRemove.remove();
+      const divToInsert = document.createElement('div');
+      divToInsert.id = element.id;
+      divToInsert.className = 'comment_not_liked';
+      const likes_count = Number(mainDiv.innerHTML) - 1;
+      mainDiv.innerHTML = '';
+      mainDiv.appendChild(divToInsert);
+      mainDiv.innerHTML += likes_count;
+      mainDiv.firstChild.addEventListener('click', () => {
+            commentLike(divToInsert);
       });
 };
