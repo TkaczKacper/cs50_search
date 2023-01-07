@@ -111,7 +111,7 @@ def edit(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
     except Post.DoesNotExist:
-        return JsonResponse({"error": "Email not found."}, status=404)
+        return JsonResponse({"error": "Post not found."}, status=404)
 
     if request.method == 'UPDATE':
         data = json.loads(request.body)
@@ -123,6 +123,25 @@ def edit(request, post_id):
     return HttpResponseRedirect(reverse('index'))
 
 
+@csrf_exempt
+def like(request, post_id):
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found"}, status=404)
+
+    if request.method == "LIKE":
+        post.likes.add(request.user)
+        post.save()
+        return HttpResponse(status=204)
+    if request.method == "UNLIKE":
+        post.likes.remove(request.user)
+        post.save()
+        return HttpResponse(status=204)
+    else: 
+        return HttpResponse(status=400)
+
+        
 def login_view(request):
     if request.method == "POST":
 

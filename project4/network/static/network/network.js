@@ -43,11 +43,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
       });
       document.querySelectorAll('.liked').forEach(element => {
-            element.addEventListener('click', unlike(element));
+            element.addEventListener('click', () => {
+                  unlike(element);
+            });
       });
       document.querySelectorAll('.not_liked').forEach(element => {
             element.addEventListener('click', () => {
-                  console.log(`unclicked ${element.id}`)
+                  like(element);
             });
       });
       //by default edit view hidden
@@ -56,15 +58,42 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 });
 
-function unlike(element) {
+function like(element) {
+      fetch(`/like/${element.id}`, {
+            method: 'LIKE',
+      });
       const mainDiv = document.querySelector(`#post${element.id}_likes`);
-      const divToRemove = document.querySelector(`#post${element.id}_likes`).children[0];
+      
+      const divToRemove = mainDiv.children[0];
       divToRemove.remove();
-      const div_to_insert = document.createElement('div');
-      div_to_insert.id = element.id;
-      div_to_insert.className = 'not_liked';
-      const likes_count = mainDiv.innerHTML - 1;
+
+      const divToInsert = document.createElement('div');
+      divToInsert.id = element.id;
+      divToInsert.className = 'liked';
+      const likes_count = Number(mainDiv.innerHTML) + 1;
       mainDiv.innerHTML = '';
-      mainDiv.appendChild(div_to_insert);
+      mainDiv.appendChild(divToInsert);
       mainDiv.innerHTML += likes_count;
-}
+      mainDiv.firstChild.addEventListener('click', () => {
+            unlike(divToInsert);
+      });
+};
+
+function unlike(element) {
+      fetch(`/like/${element.id}`, {
+            method: 'UNLIKE',
+      });
+      const mainDiv = document.querySelector(`#post${element.id}_likes`);
+      const divToRemove = mainDiv.children[0];
+      divToRemove.remove();
+      const divToInsert = document.createElement('div');
+      divToInsert.id = element.id;
+      divToInsert.className = 'not_liked';
+      const likes_count = Number(mainDiv.innerHTML) - 1;
+      mainDiv.innerHTML = '';
+      mainDiv.appendChild(divToInsert);
+      mainDiv.innerHTML += likes_count;
+      mainDiv.firstChild.addEventListener('click', () => {
+            like(divToInsert);
+      });
+};
