@@ -62,8 +62,8 @@ function like(element) {
       fetch(`/like/${element.id}`, {
             method: 'LIKE',
       });
-      const mainDiv = document.querySelector(`#post${element.id}_likes`);
-      
+
+      const mainDiv = document.querySelector(`#post${element.id}_likes`);  
       const divToRemove = mainDiv.children[0];
       divToRemove.remove();
 

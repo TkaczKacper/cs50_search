@@ -97,22 +97,25 @@
                         <div id="post_timestamp">
                             {{ post.timestamp }}
                         </div>
-                        <div class="d-flex" id="post{{ post.id }}_likes">
-                            {% if user in post.likes.all %}
-                                <div class="liked" id="{{ post.id }}"></div>
-                            {% else %}
-                                <div class="not_liked" id="{{ post.id }}"></div>
-                            {% endif %}
-                            {{ post.likes.count }}
-                        </div>
                         {% if user.is_authenticated %}
+                            <div class="d-flex" id="post{{ post.id }}_likes">
+                                {% if user in post.likes.all %}
+                                    <div class="liked" id="{{ post.id }}"></div>
+                                {% else %}
+                                    <div class="not_liked" id="{{ post.id }}"></div>
+                                {% endif %}
+                                {{ post.likes.count }}
+                            </div>
                             <form method="POST" class="form-inline">
                                 <input type="text" class="form-control" name="comment_content" placeholder="Add a comment..." style="width: 30%; margin: 10px;">
                                 <button type="submit" class="btn btn-secondary">Comment</button>
                             </form>
                         {% else %}
+                            <div class="d-flex" id="post{{ post.id }}_likes">
+                                    ♥ {{ post.likes.count }}
+                            </div>
                             <div id="post_timestamp" style="margin: 5px;">
-                                <a href="{% url 'login' %}">Log in</a> to add a comment.
+                                <a href="{% url 'login' %}">Log in</a> to react&comment.
                             </div>
                         {% endif %}
                         {% if user == post.owner %}
